@@ -1,6 +1,6 @@
 import requests
+from operator import itemgetter
 c=(range(1, 5))
-
 def cursos_disponibles():
     """[accede al url de donde extrae la lista de cursos disponibles
          y los se los muestra al usuario]"""   
@@ -44,9 +44,18 @@ def listar_emociones(id):
         cont=cont+1
             
 def detalle_registro(id):
-    URL = "http://leoviquez.synology.me/VisionAPI/cursos.py?id={0}".format(id)
+    cont=0
+    cont2=0
+    cont3=0
+    URL = "http://leoviquez.synology.me/VisionAPI/index.py?id={0}".format(id)
     r = requests.get(url = URL)
     results = eval(r.text)
+    while cont<
+    print("\n{}".format(results[0]["fecha"]))
+    print("\n{}".format(results[0]["curso"]))
+    print("\n{}".format(results[0]["rostros"]))
+      
+
    
 while True:
     a=input("\nElija la opción deseada\n----------------------------\n1 ver cursos disponibles\n2 ver listado del registros de emociones de por curso\n3 Ver detalles de registros de emociones\n4 salir del sistema\n----------------------------\nOpcion:")
@@ -67,7 +76,7 @@ while True:
             b=input("\nElija la opción deseada\n----------------------------\n1 Detalle del registro\n2 Estadísticas de reconocimientos\n3 Regresar al menu principal\n----------------------------\nOpcion:")
             if(b=="1"):
                 id=(input("Digite el id de registro:"))
-                print("detalle_registro")
+                detalle_registro(id)
             elif(b=="2"):
                 print("estadisticas")
             elif(b=="3"):
