@@ -47,6 +47,12 @@ def listar_emociones(id):
         cont=cont+1
             
 def detalle_registro(id):
+    """[Esta función extrae los detalles de cada registro realizado
+        almacenados en al base de datos]
+
+    Args:
+        id ([string]): [es un identificador utilizado para ingresar al enlace con los datos deseados ]
+    """
     URL = "http://leoviquez.synology.me/VisionAPI/index.py?id={0}".format(id)
     r = requests.get(url = URL)
     results = eval(r.text)
@@ -72,6 +78,29 @@ def detalle_registro(id):
     print("\tCantidad:",d)
     print("----------------------------")
 
+def estadisticas(id):
+    URL = "http://leoviquez.synology.me/VisionAPI/index.py?id={0}".format(id)
+    valor=0
+    valor1=0
+    valor2=0
+    valor3=0
+    valor4=0
+    r = requests.get(url = URL)
+    results = eval(r.text)
+    d=len(results[0]["rostros"])
+    conteo=(results[0]["rostros"][0]["face_expressions"]["joy_likelihood"])
+    if conteo=="VERY_LIKELY":
+        valor=(5/d)*20
+    if conteo=="LIKELY":
+        valor1=(4/d)*20
+    if conteo=="POSSIBLE":
+        valor2=(3/d)*20
+    if conteo=="UNLIKELY":
+        valor3=(2/d)*20
+    if conteo=="VERY_UNLIKELY":
+        valor4=1    
+    print(valor,valor1,valor2,valor3,valor4)
+
 while True:
     a=input("\nElija la opción deseada\n----------------------------\n1 ver cursos disponibles\n2 ver listado del registros de emociones por curso\n3 Ver detalles de registros de emociones\n4 salir del sistema\n----------------------------\nOpcion:")
     if(a=="1"):
@@ -86,14 +115,18 @@ while True:
                 break
             elif(b!=c):
                 print("\n*El valor es erróneo, digite un valor correcto*")   
-    elif(a=="3"):
+    elif(a=="3"):#Aqui intente utilizarlo per me da error 
         while True:
             b=input("\nElija la opción deseada\n----------------------------\n1 Detalle del registro\n2 Estadísticas de reconocimientos\n3 Regresar al menu principal\n----------------------------\nOpcion:")
             if(b=="1"):
-                id=(input("----------------------------\nDigite el id de registro:"))
-                detalle_registro(id)
+                    try:
+                        id=(input("----------------------------\nDigite el id de registro:"))  
+                        detalle_registro(id)
+                    except TypeError as error:
+                        print("*El id es erroneo*")                       
             elif(b=="2"):
-                print("estadisticas")
+                id=(input("----------------------------\nDigite el id de registro:"))
+                estadisticas(id)
             elif(b=="3"):
                 break
             elif(b!=c):
