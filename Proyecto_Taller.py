@@ -1,6 +1,7 @@
 import requests
 from operator import itemgetter
 c=(range(1, 5))
+
 def cursos_disponibles():
     """[accede al url de donde extrae la lista de cursos disponibles
          y los se los muestra al usuario]"""   
@@ -10,13 +11,14 @@ def cursos_disponibles():
     cont=0
     while cont<len(results):
         print("------------------------------------")
-        print("Id de grupo:",results[cont][0])
-        print("código del curso:",results[cont][1])
-        print("nombre:",results[cont][2])
-        print("grupo:",results[cont][3])
-        print("profesor:",results[cont][4])
-        print("semestre:",results[cont][5])
-        print("año:",results[cont][6])
+        print("#Cursos Disponibles#")
+        print("\tId de grupo:",results[cont][0])
+        print("\tcódigo del curso:",results[cont][1])
+        print("\tnombre:",results[cont][2])
+        print("\tgrupo:",results[cont][3])
+        print("\tprofesor:",results[cont][4])
+        print("\tsemestre:",results[cont][5])
+        print("\taño:",results[cont][6])
         print("------------------------------------")
         cont=cont+1
 
@@ -33,32 +35,45 @@ def listar_emociones(id):
     cont=0
     while cont<len(results):
         print("------------------------------------")
-        print("Id de registro:",results[cont][0])
-        print("Día:",results[cont][1])
-        print("Mes:",results[cont][2])
-        print("Año:",results[cont][3])
-        print("Hora:",results[cont][4])
-        print("Minuto:",results[cont][5])
-        print("Segundo:",results[cont][6])
+        print("#Registros de emociones por curso#")
+        print("\tId de registro:",results[cont][0])
+        print("\tDía:",results[cont][1])
+        print("\tMes:",results[cont][2])
+        print("\tAño:",results[cont][3])
+        print("\tHora:",results[cont][4])
+        print("\tMinuto:",results[cont][5])
+        print("\tSegundo:",results[cont][6])
         print("------------------------------------")
         cont=cont+1
             
 def detalle_registro(id):
-    cont=0
-    cont2=0
-    cont3=0
     URL = "http://leoviquez.synology.me/VisionAPI/index.py?id={0}".format(id)
     r = requests.get(url = URL)
     results = eval(r.text)
-    while cont<
-    print("\n{}".format(results[0]["fecha"]))
-    print("\n{}".format(results[0]["curso"]))
-    print("\n{}".format(results[0]["rostros"]))
-      
+    d=len(results[0]["rostros"])
+    print("\n----------------------------")
+    print("#Carga de las imagenes#")
+    print("\tDía:{}".format(results[0]["fecha"]["dia"]))
+    print("\tMes:{}".format(results[0]["fecha"]["mes"]))
+    print("\tAño:{}".format(results[0]["fecha"]["a\u00f1o"]))
+    print("\tHora:{}".format(results[0]["fecha"]["hora"]))
+    print("\tMinuto:{}".format(results[0]["fecha"]["minuto"]))
+    print("\tFecha:{}".format(results[0]["fecha"]["segundo"]))
+    print("----------------------------")
+    print("#Datos del grupo pertenciente#")
+    print("\tcodigo del curso:{}".format(results[0]["curso"]["codigo"]))
+    print("\tCurso:{}".format(results[0]["curso"]["Curso"]))
+    print("\tGrupo:{}".format(results[0]["curso"]["grupo"]))
+    print("\tProfesor:{}".format(results[0]["curso"]["profesor"]))
+    print("\tSemestre:{}".format(results[0]["curso"]["semestre"]))
+    print("\tAño:{}".format(results[0]["curso"]["a\u00f1o"])) 
+    print("----------------------------")
+    print("#cantidad de rostros cargados#")
+    print("\tCantidad:",d)
+    print("----------------------------")
 
-   
 while True:
-    a=input("\nElija la opción deseada\n----------------------------\n1 ver cursos disponibles\n2 ver listado del registros de emociones de por curso\n3 Ver detalles de registros de emociones\n4 salir del sistema\n----------------------------\nOpcion:")
+    a=input("\nElija la opción deseada\n----------------------------\n1 ver cursos disponibles\n2 ver listado del registros de emociones por curso\n3 Ver detalles de registros de emociones\n4 salir del sistema\n----------------------------\nOpcion:")
     if(a=="1"):
             cursos_disponibles()
     elif(a=="2"):
@@ -75,7 +90,7 @@ while True:
         while True:
             b=input("\nElija la opción deseada\n----------------------------\n1 Detalle del registro\n2 Estadísticas de reconocimientos\n3 Regresar al menu principal\n----------------------------\nOpcion:")
             if(b=="1"):
-                id=(input("Digite el id de registro:"))
+                id=(input("----------------------------\nDigite el id de registro:"))
                 detalle_registro(id)
             elif(b=="2"):
                 print("estadisticas")
