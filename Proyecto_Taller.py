@@ -1,12 +1,18 @@
 import requests
 from operator import itemgetter
-c=(range(1, 5))
-   
+c=(range(1, 5))   
 URL = "http://leoviquez.synology.me/VisionAPI/cursos.py"
 r = requests.get(url = URL)
 results = eval(r.text)
 ###################################################################
 def menor(results):
+    """[Esta función obtiene el id menor]
+
+    Args:
+        results ([type:list]): [Esta lista obtiene los datos que se encuentran en la base de datos del enlace] 
+
+    return(Esta retor en valor a tupla_menor que es un dato de tipo tupla, así al retornar cambia el valor de la tupla_menor)
+    """
     tupla_menor=results[0]
     for e in results[1:]:
         if tupla_menor[0]>e[0]:
@@ -14,6 +20,13 @@ def menor(results):
     return(tupla_menor)
 ###################################################################
 def ordenar(results):
+    """[Esta función ordena los valores de menores que los va obteniendo en la
+     tupla_menor de la funciion menor  que es una lista a la y los agrega lm de forma ordenada]
+
+    Args:
+        results ([type:list]): [Esta lista obtiene los datos que se encuentran en la base de datos del enlace]
+    return(retorna el valor de lm )
+    """
     lm=[]
     while len(results)>0:
         tupla_menor=menor(results)
@@ -22,8 +35,12 @@ def ordenar(results):
     return(lm)
 ###################################################################
 def cursos_disponibles(results):
-    """[accede al url de donde extrae la lista de cursos disponibles
-         y los se los muestra al usuario]"""
+    """[Esta funcion imprime identificando cada dato que se presenta en la lista results, esta
+    es ordenada por medio de la funcion ordenar que es llamada antes de imprimir los datos]
+
+    Args:
+        results ([type:list]): [Esta lista obtiene los datos que se encuentran en la base de datos del enlace]
+    """
     cont=0
     results=ordenar(results)
     while cont<len(results):
@@ -41,10 +58,10 @@ def cursos_disponibles(results):
 ###################################################################
 def listar_emociones(id):
     """[Esta función extrae los registros de emociones
-        almacenados en al base de datos]
+        almacenados en al base de datos, y los impreme de forma ordenada según su fecha más reciente]
 
     Args:
-        id ([string]): [esta variable es el identificador del grupo para ingresar
+        id ([type:str]): [Esta variable es el identificador del grupo para ingresar
          al registro de este grupo]
     """
     URL = "http://leoviquez.synology.me/VisionAPI/cursos.py?id={0}".format(id)
@@ -52,8 +69,9 @@ def listar_emociones(id):
     results1 = eval(r.text)
     cont=0
     if (results1==[]):
-        print("\n*El id está fuera rango*")
+        print("\n*El id está fuera rango, regrese al menu principal*")#evita que el programa se caiga si que el identificador es invalido
     else:
+        #convierte las tuplas que se encuentran en results1 a listas dentro de una la lista results3 
         d=len(results1)
         results3=[]
         for i in range(0,d):
@@ -64,6 +82,7 @@ def listar_emociones(id):
         while pasadas>0:
             pos=0
             while pos<pasadas:
+                #ordena sun dia, mes y año las listas dentro de la lista results3 
                 if results3[pos][1:4]<results3[pos+1][1:4]:
                     temp=results3[pos][1:4]
                     results3[pos][1:4]=results3[pos+1][1:4]
@@ -72,6 +91,7 @@ def listar_emociones(id):
             pasadas=pasadas-1
         cont=0
         while cont<len(results1):
+                #imprime estiquetando los datos de las listas dentro de results3
                 print("------------------------------------")
                 print("#Registros de emociones por curso#")
                 print("\tId de registro:",results3[cont][0])
@@ -85,11 +105,11 @@ def listar_emociones(id):
                 cont=cont+1
 ###################################################################            
 def detalle_registro(id):
-    """[Esta función extrae los detalles de cada registro realizado
-        almacenados en al base de datos]
+    """[Esta función extrae los detalles de cada registro de imagenes realizado según el id
+        que se ha almacenado en al base de datos, e imprime etiquetando los datos de cada registro]
 
     Args:
-        id ([string]): [es un identificador utilizado para ingresar al enlace con los datos deseados ]
+        id ([type:str]): [Es un identificador utilizado para ingresar al enlace con los datos deseados ]
     """
     URL = "http://leoviquez.synology.me/VisionAPI/index.py?id={0}".format(id)
     r = requests.get(url = URL)
@@ -120,6 +140,13 @@ def detalle_registro(id):
         print("----------------------------")
 ###################################################################
 def estadisticas(id):
+    """[Esta funcion extrae los datos de las imagenes registradas
+     según el identificador en la base de datos, e imprime la estadistica de las 
+     emociones encontradas por la appi de google]
+
+    Args:
+        id ([type:str]): [Es un identificador utilizado para ingresar al enlace con los datos deseados]
+    """
     URL = "http://leoviquez.synology.me/VisionAPI/index.py?id={0}".format(id)
     r = requests.get(url = URL)
     results = eval(r.text)
@@ -140,6 +167,7 @@ def estadisticas(id):
         valor3=0
         valor4=0
         while cont<d:
+            #realiza un acumulador del puntaje por la emoción definida
             conteo=(results[0]["rostros"][cont]["face_expressions"]["joy_likelihood"])
             if conteo=="VERY_LIKELY":
                 valor=valor+5
@@ -152,6 +180,7 @@ def estadisticas(id):
             elif conteo=="VERY_UNLIKELY":
                 valor4=valor4+1
             cont=cont+1
+        #imprime el valor del acumulador dividido entre la cantidad de imagenes y multiplicado por 20
         print("----------------------------\nLa probabilidad de alegria es:#")
         print("\tMuy probable: {}%".format((valor/d)*20))
         print("\tProbable: {}%".format((valor1/d)*20))
@@ -305,10 +334,13 @@ def estadisticas(id):
         print("----------------------------")
 ###################################################################
 while True:
+    """[Este es el menu de opciones quien hace 
+    los llamados a las funciones según la opción elegida por el usuario ]
+    """
     a=(input("\nElija la opción deseada\n----------------------------\n1 ver cursos disponibles\n2 ver listado del registros de emociones por curso\n3 Ver detalles de registros de emociones\n4 salir del sistema\n----------------------------\nOpcion:"))
-    if(a=="1"):
+    if(a=="1"):#opcion uno del menu
         cursos_disponibles(results)
-    elif(a=="2"):
+    elif(a=="2"):#opcion dos del menu
         try:
             id=int((input("Digite el id del grupo:")))
         except ValueError as error:
@@ -316,39 +348,37 @@ while True:
             break
         while True:
             b=input("\n----------------------------\nElija la opción deseada\n----------------------------\n1 Listar registros de emociones\n2 Regresar al menú principal\n----------------------------\nOpcion:")
-            if(b=="1"):
+            if(b=="1"):#opcion uno del submenu
                 listar_emociones(id)
-            elif(b=="2"):
+            elif(b=="2"):#opcion dos del submenu
                 break
             elif(b!=c):
                 print("\n*El valor es erróneo, digite un valor correcto*")   
-    elif(a=="3"):#Aqui intente utilizarlo per me da error 
+    elif(a=="3"):#opcion tres del menu
         while True:
             b=input("\nElija la opción deseada\n----------------------------\n1 Detalle del registro\n2 Estadísticas de reconocimientos\n3 Regresar al menu principal\n----------------------------\nOpcion:")
-            if(b=="1"):
+            if(b=="1"):#opcion uno del submenu
                     try:
                         id=int((input("----------------------------\nDigite el id de registro:"))) 
                         detalle_registro(id)
                     except ValueError as error:
                         print("*El id es erroneo*")                       
-            elif(b=="2"):
+            elif(b=="2"):#opcion dos del submenu
                 try:
                     id=int((input("----------------------------\nDigite el id de registro:")))
                     estadisticas(id)
                 except ValueError as error:
                     print("*El id es erroneo*")
-            elif(b=="3"):
+            elif(b=="3"):#opcion tres del submenu
                 break
             elif(b!=c):
                 print("\n*El valor es erróneo, digite un valor correcto*")
-    elif(a=="4"):
+    elif(a=="4"):#opcion cuatro del menu
         print("------------------------------------\nGracias por utilizar la aplicaión\n------------------------------------")
         break
-    elif(a!=c):
+    elif(a!=c):#Evita que el string que digita el usuario este fuera de las opciones del menu
             print("\n*El valor es erróneo, digite un valor correcto*")
-
         
-
 
 
             
