@@ -1,14 +1,31 @@
 import requests
 from operator import itemgetter
 c=(range(1, 5))
-
-def cursos_disponibles():
+   
+URL = "http://leoviquez.synology.me/VisionAPI/cursos.py"
+r = requests.get(url = URL)
+results = eval(r.text)
+###################################################################
+def menor(results):
+    tupla_menor=results[0]
+    for e in results[1:]:
+        if tupla_menor[0]>e[0]:
+            tupla_menor=e
+    return(tupla_menor)
+###################################################################
+def ordenar(results):
+    lm=[]
+    while len(results)>0:
+        tupla_menor=menor(results)
+        lm.append(tupla_menor)
+        results.remove(tupla_menor)
+    return(lm)
+###################################################################
+def cursos_disponibles(results):
     """[accede al url de donde extrae la lista de cursos disponibles
-         y los se los muestra al usuario]"""   
-    URL = "http://leoviquez.synology.me/VisionAPI/cursos.py"
-    r = requests.get(url = URL)
-    results = eval(r.text)
+         y los se los muestra al usuario]"""
     cont=0
+    results=ordenar(results)
     while cont<len(results):
         print("------------------------------------")
         print("#Cursos Disponibles#")
@@ -21,34 +38,52 @@ def cursos_disponibles():
         print("\taño:",results[cont][6])
         print("------------------------------------")
         cont=cont+1
-
+###################################################################
 def listar_emociones(id):
     """[Esta función extrae los registros de emociones
         almacenados en al base de datos]
 
     Args:
-        id ([string]): [esta variable es el identificador del grupo para ingresar al registro de este grupo]
+        id ([string]): [esta variable es el identificador del grupo para ingresar
+         al registro de este grupo]
     """
     URL = "http://leoviquez.synology.me/VisionAPI/cursos.py?id={0}".format(id)
     r = requests.get(url = URL)
-    results = eval(r.text)
+    results1 = eval(r.text)
     cont=0
-    if (results==[]):
+    if (results1==[]):
         print("\n*El id está fuera rango*")
     else:
-        while cont<len(results):
-            print("------------------------------------")
-            print("#Registros de emociones por curso#")
-            print("\tId de registro:",results[cont][0])
-            print("\tDía:",results[cont][1])
-            print("\tMes:",results[cont][2])
-            print("\tAño:",results[cont][3])
-            print("\tHora:",results[cont][4])
-            print("\tMinuto:",results[cont][5])
-            print("\tSegundo:",results[cont][6])
-            print("------------------------------------")
-            cont=cont+1
-            
+        d=len(results1)
+        results3=[]
+        for i in range(0,d):
+            i=int(i)
+            results2=list(results1[i])
+            results3.append(results2)
+        pasadas=len(results3)-1
+        while pasadas>0:
+            pos=0
+            while pos<pasadas:
+                if results3[pos][1:4]<results3[pos+1][1:4]:
+                    temp=results3[pos][1:4]
+                    results3[pos][1:4]=results3[pos+1][1:4]
+                    results3[pos+1][1:4]=temp
+                pos=pos+1
+            pasadas=pasadas-1
+        cont=0
+        while cont<len(results1):
+                print("------------------------------------")
+                print("#Registros de emociones por curso#")
+                print("\tId de registro:",results3[cont][0])
+                print("\tDía:",results3[cont][1])
+                print("\tMes:",results3[cont][2])
+                print("\tAño:",results3[cont][3])
+                print("\tHora:",results3[cont][4])
+                print("\tMinuto:",results3[cont][5])
+                print("\tSegundo:",results3[cont][6])
+                print("------------------------------------")
+                cont=cont+1
+###################################################################            
 def detalle_registro(id):
     """[Esta función extrae los detalles de cada registro realizado
         almacenados en al base de datos]
@@ -83,7 +118,7 @@ def detalle_registro(id):
         print("#cantidad de rostros cargados#")
         print("\tCantidad:",d)
         print("----------------------------")
-
+###################################################################
 def estadisticas(id):
     URL = "http://leoviquez.synology.me/VisionAPI/index.py?id={0}".format(id)
     r = requests.get(url = URL)
@@ -268,11 +303,11 @@ def estadisticas(id):
         print("\tImprobable: {}%".format((valor3/d)*20))
         print("\tMuy improbable: {}%".format((valor4/d)*20))
         print("----------------------------")
-
+###################################################################
 while True:
     a=(input("\nElija la opción deseada\n----------------------------\n1 ver cursos disponibles\n2 ver listado del registros de emociones por curso\n3 Ver detalles de registros de emociones\n4 salir del sistema\n----------------------------\nOpcion:"))
     if(a=="1"):
-        cursos_disponibles()
+        cursos_disponibles(results)
     elif(a=="2"):
         try:
             id=int((input("Digite el id del grupo:")))
